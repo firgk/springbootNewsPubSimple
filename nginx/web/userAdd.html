@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="currency.css">
+		<meta charset="utf-8">
+		<title></title>
+
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			function user_add() {
+				var username = $("#username").val(); // 获取用户名
+				var password = $("#password").val(); // 获取用户名
+				var role = $("#role").val(); // 获取用户名
+				$.ajax({
+					url: 'http://localhost:8081/user/insertUser/',
+					type: 'GET',
+					data: {
+						username: username,
+						password: password,
+						role: role
+					},
+					success: function(data) {
+						if (data === "true") {
+							alert("添加成功");
+							history.back();
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+	<body>
+
+
+		<div class="column is-offset-1 is-11">
+
+			<nav class="navbar" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+					<a class="navbar-item" href="#">
+						<img src="./pictures/287110280.jpg" width="112" height="28">
+					</a>
+
+					<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+						data-target="navbarBasicExample">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+
+				<div id="navbarBasicExample" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" onclick="location.href='/web/user_handle.html'">
+							管理
+						</a>
+						<a class="navbar-item" onclick="location.href='/web/userAdd.html'">
+							添加
+						</a>
+						<a class="navbar-item" onclick="location.href='/web/userSearch.html'">
+							搜索
+						</a>
+					</div>
+				</div>
+			</nav>
+
+			<div class=" column is-offset-1">
+				<br>
+				<table border="1" style="text-align: center;"
+					class="table is-bordered is-striped is-narrow is-hoverable ">
+					<tr>
+						<td>类型</td>
+						<td>用户名</td>
+						<td>密码</td>
+						<td>身份</td>
+					</tr>
+					<tbody id=user-container></tbody>
+					<tr>
+						<form id="updateform">
+							<td><span style="height: 40px; display: flex; align-items: center; justify-content: center;">New</span></td>
+							<td> <input type="text" name="username" id="username" class="input"></td>
+							<td><input type="password" name="password" id="password" class="input"></td>
+							<td>
+								<select id="role" name="role" class="select" style="height: 40px; display: flex; align-items: center; justify-content: center;">
+									<option value="0">用户</option>
+									<option value="1">管理员-用户管理</option>
+									<option value="2">管理员-新闻数据</option>
+								</select>
+							</td>
+						</form>
+					</tr>
+				</table>
+				<button onclick="user_add()" class="button is-primary">提交</button>
+				<button onclick="window.history.back()" class="button is-primary">返回</button>
+
+
+			</div>
+
+
+
+
+
+		</div>
+	</body>
+</html>

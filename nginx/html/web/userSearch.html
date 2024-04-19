@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="currency.css">
+	<meta charset="utf-8">
+	<title></title>
+
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		function user_search() {
+			username = $("#username").val(); // 获取用户名
+			$.ajax({
+				url: 'http://localhost:8081/user/GetUserByUsername/',
+				type: 'GET',
+				data: {
+					username: username,
+				},
+				dataType: 'json',
+				success: function (news) {
+					const newsContainer = $('#user-container');
+					newsContainer.empty();
+
+					const newsItem = $('<table>');
+					newsItem.html(`
+						<thead>
+							<tr>
+								<td>userId</td>
+								<td>username</td>
+								<td>password</td>
+								<td>role</td>
+								<td>createdAt</td>
+								<td>操作</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					`);
+
+					newsContainer.append(newsItem);
+
+					const tbody = newsItem.find('tbody');
+
+					news.forEach(user => {
+						const row = $('<tr>');
+						row.html(`
+							<td>${user.userId}</td>
+							<td>${user.username}</td>
+							<td>${user.password}</td>
+							<td>${user.role}</td>
+							<td>${user.createdAt}</td>
+							<td onclick="user_update(${user.userId})">修改</td>
+							<td onclick="user_delete(${user.userId})">删除</td>
+						`);
+						tbody.append(row);
+					});
+				},
+				error: function (error) {
+					const newsContainer = $('#user-container');
+					newsContainer.empty();
+					alert("没有这个用户");
+				}
+			});
+		}
+	</script>
+
+	<script>
+	</script>
+</head>
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+<body>
+
+
+
+
+
+	<div class="column is-offset-1 is-11">
+
+
+		<nav class="navbar" role="navigation" aria-label="main navigation">
+			<div class="navbar-brand">
+				<a class="navbar-item">
+					<img src="./static/baitaixinwen.png" width="112" height="28">
+				</a>
+
+				<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+					data-target="navbarBasicExample">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<div id="navbarBasicExample" class="navbar-menu">
+				<div class="navbar-start">
+					<a class="navbar-item" onclick="location.href='/web/user_handle.html'">
+						管理
+					</a>
+					<a class="navbar-item" onclick="location.href='/web/userAdd.html'">
+						添加
+					</a>
+					<a class="navbar-item" onclick="location.href='/web/userSearch.html'">
+						搜索
+					</a>
+				</div>
+			</div>
+		</nav>
+
+
+		<div class=" column is-offset-1">
+			<br>
+			<table border="1" style="text-align: center;" class="table is-bordered is-striped is-narrow is-hoverable ">
+				<thead>
+					<tr>
+						<td>类型</td>
+						<td>用户名</td>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+				<tr>
+					<form id="updateform">
+						<td>
+							<div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+								username
+							</div>
+						</td>
+						<td> <input type=" text" name="username" id="username" class="input">
+						</td>
+					</form>
+				</tr>
+			</table>
+			<button onclick="user_search()" class="button is-primary">搜索</button>
+			<button onclick="window.history.back()" class="button is-primary">返回</button>
+			<br>
+			<br>
+			<hr>
+			<br>
+			<table id=user-container style="text-align: center;"
+				class="table is-bordered is-striped is-narrow is-hoverable ">
+			</table>
+		</div>
+	</div>
+
+
+</body>
+<script>
+	function user_update(id) {
+		location.href = "/web/userUpdate.html?id=" + id;
+	}
+
+	function user_delete(id) {
+		$.ajax({
+			url: 'http://localhost:8081/user/delUserById/' + id,
+			type: 'GET',
+			success: function (data) {
+				if (data === "true") {
+					alert("删除成功");
+					refreshPage2();
+				}
+			}
+		});
+	}
+</script>
+
+</html>

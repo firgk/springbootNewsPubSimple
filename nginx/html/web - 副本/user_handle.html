@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="currency.css">
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			// 刷新页面的函数
+			function refreshPage() {
+				if (sessionStorage.getItem("isReload")) {
+
+				} else {
+					window.location.reload();
+					sessionStorage.setItem("isReload", true)
+				}
+			}
+			window.onload = refreshPage();
+
+
+			function refreshPage2() {
+				if (sessionStorage.getItem("isReload2")) {
+
+				} else {
+					window.location.reload();
+					sessionStorage.setItem("isReload2", true)
+				}
+			}
+			window.onload = refreshPage();
+			$.ajax({
+				url: 'http://localhost:8081/user/getAllUsers',
+				type: 'GET',
+				dataType: 'json',
+				success: function(newsData) {
+					// 将新闻数据显示在页面上
+					const newsContainer = $('#user-container');
+					newsData.forEach(news => {
+						const newsItem = $('<tr>');
+						newsItem.html(`
+							<td>${news.userId}</td>
+							<td>${news.username}</td>
+							<td>${news.password}</td>
+							<td>${news.role}</td>
+							<td>${news.createdAt}</td>
+							<td onclick="user_update(${news.userId})">修改</td>
+							<td onclick="user_delete(${news.userId})">删除</td>
+						`);
+						newsContainer.append(newsItem);
+					});
+				},
+				error: function(error) {
+					console.error('Error fetching news:', error);
+				}
+			});
+
+			function user_update(id) {
+				location.href = "/web/userUpdate.html?id=" + id;
+			}
+
+			function user_delete(id) {
+				$.ajax({
+					url: 'http://localhost:8081/user/delUserById/' + id,
+					type: 'GET',
+					success: function(data) {
+						if (data === "true") {
+							alert("删除成功");
+							refreshPage2();
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<table border="1">
+				<tr>
+					<td onclick="location.href='/web/userSearch.html'">搜索</td>
+					<td onclick="location.href='/web/userAdd.html'">增加</td>
+				</tr>
+			</table>
+
+			<br>
+			<table border="1" style="text-align: center;">
+				<tr>
+					<td>userId</td>
+					<td>username</td>
+					<td>password</td>
+					<td>role</td>
+					<td>createdAt</td>
+					<td>操作</td>
+					<td>操作</td>
+				</tr>
+				<tbody id=user-container></tbody>
+			</table>
+		</div>
+	</body>
+</html>

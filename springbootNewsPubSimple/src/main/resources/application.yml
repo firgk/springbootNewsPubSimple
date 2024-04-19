@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/news
+    username: root
+    password:
+  web:
+    resources:
+      static-locations: classpath:/static/,file:${photo.file.dir} #暴露哪些资源可以通过项目名访问
+  http:
+    multipart:
+      enabled: true # 默认支持文件上传
+      file-size-threshold: 0 # 支持文件写入磁盘
+      max-file-size: 10MB # 最大文件上传大小
+      max-request-size: 100MB  # 最大支持请求大小
+
+photo:
+  file:
+    dir: ${user.dir}/pictures/
+    # JVM启动目录
+
+
+
+# mybatis配置
+mybatis:
+  mapper-locations: classpath:com/concat/mapper/*.xml
+#  type-aliases-package: com.concat.domain

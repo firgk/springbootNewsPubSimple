@@ -1,0 +1,155 @@
+<html>
+<meta charset="UTF-8">
+
+<head>
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		$.ajax({
+			url: 'http://localhost:8081/Category/getAllCategories',
+			type: 'GET',
+			dataType: 'json',
+			success: function (newsData) {
+				// 将新闻数据显示在页面上
+				const newsContainer = $('#Category-container');
+				newsData.forEach(news => {
+					const newsItem = $('<a  class="navbar-item" onclick="getNewSubtitlesByCategoryId(' + news.categoryId + ' )"> ' + news.name + '</a>');
+					newsContainer.append(newsItem);
+				});
+			},
+			error: function (error) {
+				console.error('Error fetching news:', error);
+			}
+		});
+
+
+		$.ajax({
+			url: 'http://localhost:8081/news/getNewsSubTitle',
+			type: 'GET',
+			dataType: 'json',
+			success: function (newsData) {
+				// 将新闻数据显示在页面上
+				const newsContainer = $('#News-container');
+
+				newsData.forEach(news => {
+					const newsItem = $('<div>');
+					newsItem.html(`
+													
+							<div class="column is-offset-1">
+								<div class="tile is-ancestor">
+									<div class="tile is-parent">
+										<article class="tile is-child  is-info">
+											<figure class="image is-4by3">
+												<img src="${news.imageUrl}">
+											</figure>
+										</article>
+									</div>
+									<div class="tile is-vertical is-9">
+										<div class="tile">
+											<div class="tile is-parent is-vertical is-8">
+												<article class="tile is-child  is-primary">
+													<section class="section notification is-info">
+														<div onclick="toDetailedInfo(${news.newsId})">
+															<p class="title">${news.title}</p>
+															<p class="subtitle">${news.content}</p>
+														</div>
+													</section>
+												</article>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+												
+					`);
+					newsContainer.append(newsItem);
+				});
+			},
+			error: function (error) {
+				console.error('Error fetching news:', error);
+			}
+		});
+
+		function getNewSubtitlesByCategoryId(id) {
+			$.ajax({
+				url: 'http://localhost:8081/news/getNewSubtitlesByCategoryId/' + id,
+				type: 'GET',
+				dataType: 'json',
+				success: function (newsData) {
+					// 将新闻数据显示在页面上
+					const newsContainer = $('#News-container');
+					newsContainer.empty();
+					newsData.forEach(news => {
+						const newsItem = $('<div>');
+						newsItem.html(`
+								<div class="column is-offset-1">
+									<div class="tile is-ancestor">
+										<div class="tile is-parent">
+											<article class="tile is-child  is-info">
+												<figure class="image is-4by3">
+													<img src="${news.imageUrl}">
+												</figure>
+											</article>
+										</div>
+										<div class="tile is-vertical is-9">
+											<div class="tile">
+												<div class="tile is-parent is-vertical is-8">
+													<article class="tile is-child  is-primary">
+														<section class="section notification is-info">
+															<div onclick="toDetailedInfo(${news.newsId})">
+																<p class="title">${news.title}</p>
+																<p class="subtitle">${news.content}</p>
+															</div>
+														</section>
+													</article>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							`);
+						newsContainer.append(newsItem);
+					});
+				},
+				error: function (error) {
+					console.error('Error fetching news:', error);
+				}
+			});
+		}
+
+		function toDetailedInfo(newsId) {
+			location.href = "/web/new_info.html?newsId=" + newsId;
+		}
+	</script>
+
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+<body>
+
+
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+		<div class="navbar-brand">
+			<a class="navbar-item" href="#">
+				<img src="./static/baitaixinwen.png" width="112" height="28">
+			</a>
+
+		</div>
+
+		<div id="navbarBasicExample" class="navbar-menu">
+			<div class="navbar-start">
+				<a onclick="location.reload()" class="navbar-item">首页</a>
+				<div id="Category-container" style="display: flex;"></div>
+			</div>
+		</div>
+	</nav>
+
+	<div id="News-container"></div>
+</body>
+
+</html>

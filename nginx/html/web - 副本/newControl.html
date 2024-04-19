@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="currency.css">
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			// 刷新页面的函数
+			function refreshPage(inter_id) {
+				if (sessionStorage.getItem("isReload"+inter_id)) {
+				} else {
+					window.location.reload();
+					sessionStorage.setItem("isReload"+inter_id, true)
+				}
+			}
+			window.onload = refreshPage(333);
+			$.ajax({
+				url: 'http://localhost:8081/news/getAllNews',
+				type: 'GET',
+				dataType: 'json',
+				success: function(newsData) {
+					// 将新闻数据显示在页面上
+					const newsContainer = $('#news-container');
+					newsData.forEach(news => {
+						//凑着刷新一下
+						const newsItem = $('<tr>');
+						newsItem.html(`
+							<td>${news.newsId}</td>
+							<td>${news.title}</td>
+							<td>${news.content}</td>
+							<td>${news.categoryId}</td>
+							<td><img src="${news.imageUrl}"></td>
+							<td>${news.createdAt}</td>
+							<td>${news.updatedAt}</td>
+							<td onclick="news_update(${news.newsId})">更新</td>
+							<td onclick="news_delete(${news.newsId})">删除</td>
+						`);
+						newsContainer.append(newsItem);
+					});
+				},
+				error: function(error) {
+					console.error('Error fetching news:', error);
+				}
+			});
+			function news_update(id){
+				location.href="/web/news_Update.html?id="+id;
+			}
+			function news_delete(id) {
+				$.ajax({
+					url: 'http://localhost:8081/news/deleteNewsById/' + id,
+					type: 'GET',
+					success: function(data) {
+						if (data === "true") {
+							alert("删除成功");
+							refreshPage(2);
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<button onclick="location.href='/web/news_add.html'">添加新闻</button>
+			<button onclick="location.href='/web/news_find.html'">搜索新闻</button>
+			<br>
+			<table border="1" style="text-align: center;">
+				<tr>
+					<td>newsId</td>
+					<td>title</td>
+					<td>content</td>
+					<td>categoryId</td>
+					<td>imageUrl></td>
+					<td>createdAt</td>
+					<td>updatedAt</td>
+					<td>操作</td>
+					<td>操作</td>
+				</tr>
+				<tbody id="news-container"></tbody>
+			</table>
+		</div>
+	</body>
+</html>

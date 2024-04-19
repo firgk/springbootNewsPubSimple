@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="currency.css">
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			// 刷新页面的函数
+			function refreshPage(inter_id) {
+				if (sessionStorage.getItem("isReload" + inter_id)) {} else {
+					window.location.reload();
+					sessionStorage.setItem("isReload" + inter_id, true)
+				}
+			}
+			window.onload = refreshPage(1);
+			$.ajax({
+				url: 'http://localhost:8081/Category/getAllCategories',
+				type: 'GET',
+				dataType: 'json',
+				success: function(newsData) {
+					// 将新闻数据显示在页面上
+					const newsContainer = $('#category-container');
+					newsData.forEach(news => {
+						const newsItem = $('<tr>');
+						newsItem.html(`
+							<td>${news.categoryId}</td>
+							<td>${news.name}</td>
+							<td onclick="category_delete(${news.categoryId})">删除</td>
+						`);
+						newsContainer.append(newsItem);
+					});
+				},
+				error: function(error) {
+					console.error('Error fetching news:', error);
+				}
+			});
+
+
+
+			function submit_add() {
+				var name = $("#name").val();
+				$.ajax({
+					url: 'http://localhost:8081/Category/insertCategory/' + name,
+					type: 'GET',
+					success: function(data) {
+						if (data === "true") {
+							alert("添加成功");
+							refreshPage(3);
+						}
+					}
+				});
+			}
+
+
+			function category_delete(id) {
+				$.ajax({
+					url: 'http://localhost:8081/Category/deleteCategoryById/' + id,
+					type: 'GET',
+					success: function(data) {
+						if (data === "true") {
+							alert("删除成功");
+							refreshPage(2);
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+
+
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+	<body>
+
+
+
+		<div class="column is-offset-1 is-11">
+
+
+			<nav class="navbar" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+					<a class="navbar-item">
+						<img src="./static/baitaixinwen.png" width="112" height="28">
+					</a>
+					<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+						data-target="navbarBasicExample">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+
+				<div id="navbarBasicExample" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" onclick="location.href='/web/newCategory.html'" style="background-color: aqua;">
+							分类管理
+						</a>
+						<a class="navbar-item" onclick="location.href='/web/newControl.html'">
+							新闻管理
+						</a>
+					</div>
+				</div>
+			</nav>
+
+
+			<div class=" column is-offset-1">
+				<br>
+
+				<div>
+					<form>
+						<label class="label">输入您想添加的分类：</label>
+						<input name="name" id="name" class="input"  style="width: 200px;"/>
+						<br><br>
+						<button type="submit" onclick="submit_add()" class="button">添加</button>
+					</form>
+					<br>
+					<table class="table is-bordered">
+						<thead>
+							<tr>
+								<td>id</td>
+								<td>name</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody id=category-container></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+
+	</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			input {
+				width: 90px;
+			}
+		</style>
+		<link rel="stylesheet" href="currency.css">
+		<script src="kindeditor/kindeditor.js"></script>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			$.ajax({
+				url: 'http://localhost:8081/Category/getAllCategories',
+				type: 'GET',
+				success: function(data) {
+					const newsContainer = $('#category');
+					newsContainer.empty();
+					data.forEach(news => {
+						const newsItem = $('<option value="' + news.categoryId + '">' + news.name +
+							'</option>');
+						newsContainer.append(newsItem);
+					})
+				}
+			});
+
+			function submit_all() {
+				var title = $("#title").val();
+				var picture = $("#picture").val();
+				var category = $("#category").val();
+				var content = $("#content").val();
+				$.ajax({
+					url: 'http://localhost:8081/news/insertNews',
+					type: 'GET',
+					data: {
+						title: title,
+						picture: picture,
+						category: category,
+						content: content
+					},
+					success: function(data) {
+						if (data === "true") {
+							alert("添加成功");
+							history.back();
+						}
+					}
+				});
+			}
+		</script>
+
+		<script>
+
+		</script>
+	</head>
+	<body>
+		<table border="1" style="text-align: center;">
+			<tr>
+				<td>类型</td>
+				<td>title</td>
+				<td>分类</td>
+				<td>首页图片</td>
+			</tr>
+			<tbody id=user-container></tbody>
+			<tr>
+				<form id="updateform">
+					<td>New</td>
+					<td> <input type="text" id="title"></td>
+					<td><select id="category"></select></td>
+					<td> <input type="text" id="picture"></td>
+				</form>
+			</tr>
+		</table>
+		<h1>正文</h1>
+		<textarea style="height: 400px; width:900px;" id="content"></textarea>
+		<button onclick="submit_all()">提交</button>
+		<button onclick="window.history.back()">返回</button>
+	</body>
+	<script>
+		KindEditor.ready(function() {
+			var kindEditorParams = {
+				afterBlur: function() {
+					this.sync();
+				}
+			};
+			KindEditor.create('#content', kindEditorParams);
+		});
+	</script>
+</html>

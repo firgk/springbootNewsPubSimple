@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			function user_search() {
+				keyword = $("#keyword").val(); // 获取用户名
+				$.ajax({
+					url: 'http://localhost:8081/news/getNewsByFuzzyQuery',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						keyword: keyword
+					},
+					success: function(news) {
+						// 将新闻数据显示在页面上
+						const newsContainer = $('#news-container');
+						newsContainer.empty();
+						newsContainer.append(`
+							<thead>
+								<tr>
+									<td>newsId</td>
+									<td>title</td>
+									<td style="width: 600px;">content</td>
+									<td>categoryId</td>
+									<td>imageUrl></td>
+									<td>操作</td>
+									<td>操作</td>
+								</tr>
+							</thead>
+						`);
+						const newsItem = $('<tbody>');
+						news.forEach(news => {
+							const newsItem = $('<tr>');
+							newsItem.html(`
+							<td>${news.newsId}</td>
+							<td>${news.title}</td>
+							<td>${news.content}</td>
+							<td>${news.categoryId}</td>
+							<td><img src="${news.imageUrl}"></td>
+							<td onclick="news_update(${news.newsId})">更新</td>
+							<td onclick="news_delete(${news.newsId})">删除</td>
+						`);
+							newsContainer.append(newsItem);
+						})
+					},
+					error: function(error) {
+						alert("wrong");
+					}
+				});
+			}
+		</script>
+
+		<script>
+		</script>
+	</head>
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+	<body>
+
+
+
+		<div class="column is-11">
+
+
+			<nav class="navbar" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+					<a class="navbar-item"">
+						<img src="./static/baitaixinwen.png" width="112" height="28">
+					</a>
+
+					<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+						data-target="navbarBasicExample">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+
+				<div id="navbarBasicExample" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" onclick="location.href='/web/newCategory.html'">
+							分类管理
+						</a>
+						<a class="navbar-item" onclick="location.href='/web/newControl.html'" style="background-color: aqua;">
+							新闻管理
+						</a>
+						<div id="navbarBasicExample" class="navbar-menu" style="background-color: antiquewhite;">
+							<a class="navbar-item" onclick="location.href='/web/news_add.html'">
+								新闻添加
+							</a>
+							<a class="navbar-item" onclick="location.href='/web/news_find.html'">
+								新闻搜索
+							</a>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<div class=" column is-offset-1">
+				<br>
+				<label class="label">关键词</label>
+				<td> <input type="text" id="keyword" class="input" style="width: 200px;"></td>&nbsp;
+				<button onclick="user_search()" class="button is-primary">搜索</button>
+				<br>
+				<br>
+				<hr>
+				<br>
+				<table border="1" style="text-align: center;" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" id="news-container">
+				</table>
+			</div>
+		</div>
+
+
+
+
+
+	</body>
+	<script>
+		function news_update(id) {
+			location.href = "/web/userUpdate.html?id=" + id;
+		}
+
+		function news_delete(id) {
+			$.ajax({
+				url: 'http://localhost:8081/news/deleteNewsById/' + id,
+				type: 'GET',
+				success: function(data) {
+					if (data === "true") {
+						alert("删除成功");
+						refreshPage2();
+					}
+				}
+			});
+		}
+	</script>
+
+</html>

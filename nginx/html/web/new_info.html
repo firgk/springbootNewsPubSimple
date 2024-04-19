@@ -1,0 +1,185 @@
+<html>
+<meta charset="UTF-8">
+
+<head>
+
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		var urlParams = new URLSearchParams(window.location.search);
+		var newsId = urlParams.get('newsId');
+		$.ajax({
+			url: 'http://localhost:8081/news/getNewsById/' + newsId,
+			type: 'GET',
+			dataType: 'json',
+			success: function (newsData) {
+				// 将新闻数据显示在页面上
+				const newsContainer = $('#News-container');
+				const newsItem = $('<div>');
+				newsItem.html(`
+		
+							<div class="tile is-ancestor">
+								<div class="tile is-parent">
+									<article class="tile is-child  is-info">
+										<figure class="image is-16by9">
+											<img src="${newsData.imageUrl}">
+										</figure>
+									</article>
+								</div>
+							</div>
+							<article class="tile is-child  is-primary">
+								<section class="section notification is-info">
+									<div onclick="toDetailedInfo(${newsData.newsId})">
+										<p class="title">${newsData.title}</p>
+										<p class="subtitle">${newsData.content}</p>
+									</div>
+								</section>
+							</article>
+						
+					`);
+				newsContainer.append(newsItem);
+			},
+			error: function (error) {
+				console.error('Error fetching news:', error);
+			}
+		});
+
+		$.ajax({
+			url: 'http://localhost:8081/Comment/getCommentByNewsId/' + newsId,
+			type: 'GET',
+			dataType: 'json',
+			success: function (newsData) {
+				// 将新闻数据显示在页面上
+				const newsContainer = $('#Comment-container');
+				newsContainer.empty();
+				newsData.forEach(news => {
+					const newsItem = $('<div>');
+					newsItem.html(`
+						<div>
+							<article class="media">
+								<figure class="media-left">
+									<p class="image is-64x64">
+										<img src="http://leaweihou.site:1003/photobed/2024_01_07_12_13_51.png">
+									</p>
+								</figure>
+								<div class="media-content">
+									<div class="content">
+										<p>
+											<strong>默认用户</strong>
+											<br>
+											${news.content}
+										</p>
+									</div>
+								</div>
+							</article>
+						</div>
+						<hr>
+						`);
+					newsContainer.append(newsItem);
+				});
+			},
+			error: function (error) {
+				console.error('Error fetching news:', error);
+			}
+		});
+
+
+		var userData = sessionStorage.getItem('user');
+		// 解析JSON字符串为对象
+		var userObject = JSON.parse(userData);
+		// 获取特定字段的值，例如获取username的值
+		function submitForm() {
+			// 获取表单数据
+			var formDataArray = $("#myForm").serializeArray();
+			formDataArray.push({
+				name: "username",
+				value: userObject.username
+			}, {
+				name: "newsId",
+				value: newsId
+			});
+			// 将数组转回字符串
+			var formData = $.param(formDataArray);
+			// 发起Ajax请求
+			$.ajax({
+				type: "GET",
+				url: "http://localhost:8081/Comment/insertComment", // 替换为实际的服务器端处理脚本地址
+				data: formData,
+				success: function (response) {
+					if (response === "true")
+						alert("提交成功");
+				},
+				error: function (error) {
+					alert("异常")
+				}
+			});
+		}
+	</script>
+
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+
+
+<body>
+
+
+
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+		<div class="navbar-brand">
+			<a class="navbar-item" >
+				<img src="./pictures/287110280.jpg" width="112" height="28">
+			</a>
+
+		</div>
+
+		<div id="navbarBasicExample" class="navbar-menu">
+		</div>
+	</nav>
+
+
+
+
+	<div class="column is-offset-1 is-10">
+
+
+
+		<div id="News-container"></div>
+		<br>
+		<div id="Comment-container"></div>
+
+		<form id="myForm">
+			<article class="media">
+				<figure class="media-left">
+					<p class="image is-64x64">
+						<img src="./static/baitaixinwen.png">
+					</p>
+				</figure>
+				<div class="media-content">
+					<div class="field">
+						<p class="control">
+							<textarea class="textarea" placeholder="添加你的评论......" name="text"></textarea>
+						</p>
+					</div>
+				</div>
+			</article>
+			<div class="column is-offset-11">
+				<input type="button" value="提交" onclick="submitForm() " class="button is-info">
+			</div>
+		</form>
+
+
+	</div>
+
+
+
+
+</body>
+<script>
+</script>
+
+</html>

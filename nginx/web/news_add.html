@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		input {
+			width: 90px;
+		}
+	</style>
+	<script src="kindeditor/kindeditor.js"></script>
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		$.ajax({
+			url: 'http://localhost:8081/Category/getAllCategories',
+			type: 'GET',
+			success: function (data) {
+				const newsContainer = $('#category');
+				newsContainer.empty();
+				data.forEach(news => {
+					const newsItem = $('<option value="' + news.categoryId + '">' + news.name +
+						'</option>');
+					newsContainer.append(newsItem);
+				})
+			}
+		});
+
+		function submit_all() {
+			var title = $("#title").val();
+			var picture = $("#picture").val();
+			var category = $("#category").val();
+			var content = $("#content").val();
+			$.ajax({
+				url: 'http://localhost:8081/news/insertNews',
+				type: 'GET',
+				data: {
+					title: title,
+					picture: picture,
+					category: category,
+					content: content
+				},
+				success: function (data) {
+					if (data === "true") {
+						alert("添加成功");
+						history.back();
+					}
+				}
+			});
+		}
+	</script>
+
+</head>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="bulma/bulma.css">
+
+
+
+
+<body>
+
+
+
+	<div class="column is-11">
+
+
+		<nav class="navbar" role="navigation" aria-label="main navigation">
+			<div class="navbar-brand">
+				<a class="navbar-item" href="https://bulma.io">
+					<img src="./pictures/287110280.jpg" width="112" height="28">
+				</a>
+
+				<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+					data-target="navbarBasicExample">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<div id="navbarBasicExample" class="navbar-menu">
+				<div class="navbar-start">
+					<a class="navbar-item" onclick="location.href='/web/newCategory.html'">
+						分类管理
+					</a>
+					<a class="navbar-item" onclick="location.href='/web/newControl.html'"
+						style="background-color: aqua;">
+						新闻管理
+					</a>
+					<div id="navbarBasicExample" class="navbar-menu" style="background-color: antiquewhite;">
+						<a class="navbar-item" onclick="location.href='/web/news_add.html'">
+							新闻添加
+						</a>
+						<a class="navbar-item" onclick="location.href='/web/news_find.html'">
+							新闻搜索
+						</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class=" column is-offset-1">
+			<br>
+
+
+
+			<table border="1" style="text-align: center;" class="table">
+				<thead>
+					<tr>
+						<td>类型</td>
+						<td>title</td>
+						<td>分类</td>
+					</tr>
+				</thead>
+				<tbody id=user-container></tbody>
+				<tr>
+					<form id="updateform">
+						<td>New</td>
+						<td> <input type="text" id="title" class="input"></td>
+						<td><select id="category" class="input" style="text-align: center; background-color: azure;">
+							</select>
+						</td>
+					</form>
+				</tr>
+			</table>
+			<label class="label">首页图片</label>
+			<div class="column is-4">
+				<form method="POST" enctype="multipart/form-data" action="http://localhost:8081/news/fileupload">
+					<input type="file" name="lemonFile" class="input is-primary" id="picture"/>
+					<br>
+					<input type="submit" value="上传"  class="input is-primary" onclick="window.alert('上传成功')" />
+					<br>
+					<br>
+				</form>
+			</div>
+			<br>
+			<p class="is-size-3">正文:</p>
+			<small>在此处输入你的内容</small>
+			<textarea style="height: 400px; width:1100px;" id="content"></textarea>
+			<br />
+			<button onclick="submit_all()" class="button is-primary">提交</button>
+			<button onclick="window.history.back()" class="button is-primary">返回</button>
+		</div>
+	</div>
+</body>
+
+
+<script>
+	KindEditor.ready(function () {
+		var kindEditorParams = {
+			afterBlur: function () {
+				this.sync();
+			}
+		};
+		KindEditor.create('#content', kindEditorParams);
+	});
+</script>
+
+</html>

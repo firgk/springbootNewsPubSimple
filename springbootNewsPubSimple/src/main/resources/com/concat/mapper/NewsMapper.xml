@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- src/main/resources/mapper/NewsMapper.xml -->
+
+<!-- src/main/resources/mapper/UserMapper.xml -->
+
+<!-- src/main/resources/mapper/NewsMapper.xml -->
+
+<mapper namespace="com.concat.mapper.NewsMapper">
+
+    <resultMap id="newsResultMap" type="com.concat.domain.News">
+        <id property="newsId" column="news_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="getNewsById" resultMap="newsResultMap">
+        SELECT * FROM News WHERE news_id = #{newsId}
+    </select>
+
+    <insert id="insertNews">
+        INSERT INTO News (title, content, category_id, image_url)
+        VALUES (#{title}, #{content}, #{categoryId}, #{imageUrl})
+    </insert>
+
+    <update id="updateNews">
+        UPDATE News SET title = #{title}, content = #{content},
+        category_id = #{categoryId}, image_url = #{imageUrl},
+        updated_at = CURRENT_TIMESTAMP
+        WHERE news_id = #{newsId}
+    </update>
+
+    <delete id="deleteNewsById">
+        DELETE FROM News WHERE news_id = #{newsId}
+    </delete>
+
+
+    <select id="getAllNews" resultMap="newsResultMap">
+        SELECT * FROM News
+    </select>
+
+    <select id="getNewsByCategory" resultMap="newsResultMap">
+        SELECT * FROM News WHERE category_id = #{category_id}
+    </select>
+
+    <select id="getNewsByNewsTitle" resultMap="newsResultMap">
+        SELECT * FROM News WHERE title = #{title}
+    </select>
+
+    <select id="getNewsByNewsTitlePiece" resultMap="newsResultMap">
+        SELECT * FROM News WHERE title LIKE CONCAT('%', #{title}, '%')
+    </select>
+
+    <select id="getNewsByNewsContentPiece" resultMap="newsResultMap">
+        SELECT * FROM News WHERE content LIKE CONCAT('%', #{content}, '%')
+    </select>
+
+</mapper>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="currency.css">
+		<meta charset="utf-8">
+		<title></title>
+
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			function user_search() {
+				username = $("#username").val(); // 获取用户名
+				$.ajax({
+					url: 'http://localhost:8081/user/GetUserByUsername/',
+					type: 'GET',
+					data: {
+						username: username,
+					},
+					dataType: 'json',
+					success: function(news) {
+						// 将新闻数据显示在页面上
+						const newsContainer = $('#user-container');
+						newsContainer.empty();
+						const newsItem = $('<tr>');
+						newsItem.html(`
+								<td>${news.userId}</td>
+								<td>${news.username}</td>
+								<td>${news.password}</td>
+								<td>${news.role}</td>
+								<td>${news.createdAt}</td>
+								<td onclick="user_update(${news.userId})">修改</td>
+								<td onclick="user_delete(${news.userId})">删除</td>
+							`);
+						newsContainer.append(newsItem);
+					},
+					error: function(error) {
+						const newsContainer = $('#user-container');
+						newsContainer.empty();
+						alert("没有这个用户");
+					}
+				});
+			}
+		</script>
+
+		<script>
+		</script>
+	</head>
+	<body>
+		<table border="1" style="text-align: center;">
+			<tr>
+				<td>类型</td>
+				<td>用户名</td>
+			</tr>
+			<tbody></tbody>
+			<tr>
+				<form id="updateform">
+					<td>username</td>
+					<td> <input type="text" name="username" id="username"></td>
+				</form>
+			</tr>
+		</table>
+		<button onclick="user_search()">搜索</button>
+		<button onclick="window.history.back()">返回</button>
+		<br>
+		<br>
+		<hr>
+		<br>
+		<table border="1" style="text-align: center;">
+			<tr>
+				<td>userId</td>
+				<td>username</td>
+				<td>password</td>
+				<td>role</td>
+				<td>createdAt</td>
+				<td>操作</td>
+				<td>操作</td>
+			</tr>
+			<tbody id=user-container></tbody>
+		</table>
+	</body>
+	<script>
+		function user_update(id) {
+			location.href = "/web/userUpdate.html?id=" + id;
+		}
+
+		function user_delete(id) {
+			$.ajax({
+				url: 'http://localhost:8081/user/delUserById/' + id,
+				type: 'GET',
+				success: function(data) {
+					if (data === "true") {
+						alert("删除成功");
+						refreshPage2();
+					}
+				}
+			});
+		}
+	</script>
+</html>

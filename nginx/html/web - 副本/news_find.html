@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title></title>
+
+	<link rel="stylesheet" href="currency.css">
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		function user_search() {
+			keyword = $("#keyword").val(); // 获取用户名
+			$.ajax({
+				url: 'http://localhost:8081/news/getNewsByFuzzyQuery',
+				type: 'GET',
+				dataType: 'json',
+				data: {
+					keyword: keyword
+				},
+				success: function (news) {
+					// 将新闻数据显示在页面上
+					const newsContainer = $('#news-container');
+					newsContainer.empty();
+					const newsItem = $('<tr>');
+					news.forEach(news => {
+						const newsItem = $('<tr>');
+						newsItem.html(`
+							<td>${news.newsId}</td>
+							<td>${news.title}</td>
+							<td>${news.content}</td>
+							<td>${news.categoryId}</td>
+							<td><img src="${news.imageUrl}"></td>
+							<td>${news.createdAt}</td>
+							<td>${news.updatedAt}</td>
+							<td onclick="news_update(${news.newsId})">更新</td>
+							<td onclick="news_delete(${news.newsId})">删除</td>
+						`);
+						newsContainer.append(newsItem);
+					})
+				},
+				error: function (error) {
+					alert("wrong");
+				}
+			});
+		}
+	</script>
+
+	<script>
+	</script>
+</head>
+
+<body>
+	<table border="1" style="text-align: center;">
+		<tbody></tbody>
+		<tr>
+			<form id="updateform">
+				<td>关键字</td>
+				<td> <input type="text" id="keyword"></td>
+			</form>
+		</tr>
+	</table>
+	<button onclick="user_search()">搜索</button>
+	<button onclick="window.history.back()">返回</button>
+	<br>
+	<br>
+	<hr>
+	<br>
+	<table border="1" style="text-align: center;">
+		<tr>
+			<td>newsId</td>
+			<td>title</td>
+			<td>content</td>
+			<td>categoryId</td>
+			<td>imageUrl></td>
+			<td>createdAt</td>
+			<td>updatedAt</td>
+			<td>操作</td>
+			<td>操作</td>
+		</tr>
+		<tbody id="news-container"></tbody>
+	</table>
+	<script>
+		function news_update(id) {
+			location.href = "/web/userUpdate.html?id=" + id;
+		}
+
+		function news_delete(id) {
+			$.ajax({
+				url: 'http://localhost:8081/news/deleteNewsById/' + id,
+				type: 'GET',
+				success: function(data) {
+					if (data === "true") {
+						alert("删除成功");
+						refreshPage2();
+					}
+				}
+			});
+		}
+	</script>
+
+</html>

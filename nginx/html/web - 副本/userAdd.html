@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="currency.css">
+		<meta charset="utf-8">
+		<title></title>
+
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			function user_add() {
+				var username = $("#username").val(); // 获取用户名
+				var password = $("#password").val(); // 获取用户名
+				var role = $("#role").val(); // 获取用户名
+				$.ajax({
+					url: 'http://localhost:8081/user/insertUser/',
+					type: 'GET',
+					data: {
+						username: username,
+						password: password,
+						role:role
+					},
+					success: function(data) {
+						if (data === "true") {
+							alert("添加成功");
+							history.back();
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<table border="1" style="text-align: center;">
+			<tr>
+				<td>类型</td>
+				<td>用户名</td>
+				<td>密码</td>
+				<td>身份</td>
+			</tr>
+			<tbody id=user-container></tbody>
+			<tr>
+				<form id="updateform">
+					<td>New</td>
+					<td> <input type="text" name="username" id="username"></td>
+					<td><input type="password" name="password" id="password"></td>
+					<td>
+						<select id="role" name="role">
+							<option value="0">用户</option>
+							<option value="1">管理员-用户管理</option>
+							<option value="2">管理员-新闻数据</option>
+						</select>
+					</td>
+				</form>
+			</tr>
+		</table>
+		<button onclick="user_add()">提交</button>
+		<button onclick="window.history.back()">返回</button>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<html>
+	<meta charset="UTF-8">
+	<head>
+		<link rel="stylesheet" href="currency.css">
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	</head>
+	<script>
+		function submitForm() {
+			// 获取表单数据
+			var formData = $("#myForm").serialize();
+
+			// 发起Ajax请求
+			$.ajax({
+				type: "GET",
+				url: "http://localhost:8081/user/register", // 替换为实际的服务器端处理脚本地址
+				data: formData,
+				success: function(response) {
+					// 请求成功的回调函数
+					if (response === "right") {
+						alert("注册成功,点击跳转");
+						window.location.href = "/web/login.html";
+					} else if (response === "alreadyexist")
+						alert("此用户已存在");
+					else if (response === "errorpassword")
+						alert("两次密码不一致");
+					else
+						alert("异常");
+				},
+				error: function(error) {
+					alert("异常");
+				}
+			});
+		}
+	</script>
+
+
+	<body>
+		<div class="container" style="margin-top: 50px;   width: 50%;">
+
+			<form id="myForm">
+				<label for="username">账&nbsp;&nbsp;&nbsp;&nbsp;号：</label>
+				<input type="text" name="username">
+				<br>
+				<label for="password">密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+				<input type="password" name="password">
+				<br>
+				<label for="password">二次密码:</label>
+				<input type="password" name="password2">
+				<br>
+				<input type="button" value="提交" onclick="submitForm()">
+			</form>
+		</div>
+	</body>
+</html>

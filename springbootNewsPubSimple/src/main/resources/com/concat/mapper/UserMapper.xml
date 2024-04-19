@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- src/main/resources/mapper/UserMapper.xml -->
+
+<mapper namespace="com.concat.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.concat.domain.User">
+        <id property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="getUserById" resultMap="userResultMap">
+        SELECT * FROM User WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserByUsername" resultMap="userResultMap">
+        SELECT * FROM User WHERE username = #{username}
+    </select>
+
+    <select id="getUserByUsernameAndKind" resultMap="userResultMap">
+        SELECT * FROM User WHERE username = #{username}
+        AND role = #{role}
+    </select>
+
+    <select id="getAllUsers" resultMap="userResultMap">
+        SELECT * FROM User
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO User (username, password, role,created_at)
+        VALUES (#{username}, #{password}, #{role},#{createdAt})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE User SET username = #{username}, password = #{password},
+        role = #{role} WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteUserById">
+        DELETE FROM User WHERE user_id = #{userId}
+    </delete>
+
+
+</mapper>
